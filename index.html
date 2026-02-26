@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>😎 Clique em mim 😎</title>
+
+<style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    font-family: "Segoe UI", Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: white;
+    flex-direction: column;
+    text-align: center;
+    background: linear-gradient(-45deg, #1f2937, #4c1d95, #7e22ce, #111827);
+    background-size: 400% 400%;
+    animation: fundoAnimado 10s ease infinite;
+  }
+
+  @keyframes fundoAnimado {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* FUNDO SURPRESA */
+  #bgSurpresa {
+    position: fixed;
+    inset: 0;
+    background-image: url('fundo.jpg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    z-index: 0;
+  }
+
+  #bgSurpresa.ativo {
+    opacity: 1;
+  }
+
+  button {
+    padding: 16px 34px;
+    font-size: 22px;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    background: #6366f1;
+    color: white;
+    transition: 0.25s;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+    z-index: 2;
+  }
+
+  button:hover {
+    transform: scale(1.08);
+    background: #4f46e5;
+  }
+
+  #mensagem {
+    margin-top: 30px;
+    font-size: 26px;
+    min-height: 40px;
+    white-space: pre-wrap;
+    z-index: 2;
+  }
+
+  .emoji {
+    position: absolute;
+    top: -20px;
+    font-size: 22px;
+    animation: cair linear forwards;
+    pointer-events: none;
+  }
+
+  @keyframes cair {
+    to {
+      transform: translateY(110vh);
+      opacity: 0;
+    }
+  }
+
+  .sparkle {
+    position: absolute;
+    animation: brilho 1.5s linear forwards;
+    pointer-events: none;
+  }
+
+  @keyframes brilho {
+    0% { opacity: 1; transform: scale(0.5); }
+    100% { opacity: 0; transform: scale(1.6); }
+  }
+</style>
+</head>
+<body>
+
+<!-- FUNDO QUE SURGE -->
+<div id="bgSurpresa"></div>
+
+<button onclick="iniciar()">😎 Clique em mim 😎</button>
+<div id="mensagem"></div>
+
+<audio id="somFofo" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_115b9b6f3b.mp3?filename=click-124467.mp3"></audio>
+
+<script>
+const texto = "🕵️ Missão concluída… você caiu direitinho 🤣😎";
+const emojis = ["🤣","😎","🕵️"];
+
+function iniciar() {
+  document.getElementById("somFofo").play();
+  document.getElementById("bgSurpresa").classList.add("ativo");
+  digitarTexto(texto);
+  iniciarChuva();
+  explosaoEmojis();
+  iniciarBrilhos();
+}
+
+// texto digitando
+function digitarTexto(texto) {
+  const el = document.getElementById("mensagem");
+  el.textContent = "";
+  let i = 0;
+
+  function escrever() {
+    if (i < texto.length) {
+      el.textContent += texto.charAt(i);
+      i++;
+      setTimeout(escrever, 35);
+    }
+  }
+  escrever();
+}
+
+// chuva contínua
+function iniciarChuva() {
+  setInterval(() => {
+    criarEmoji(Math.random() * window.innerWidth, -20, 2 + Math.random() * 3);
+  }, 250);
+}
+
+// explosão ao clicar
+function explosaoEmojis() {
+  const centroX = window.innerWidth / 2;
+  const centroY = window.innerHeight / 2;
+
+  for (let i = 0; i < 28; i++) {
+    const e = document.createElement("div");
+    e.className = "emoji";
+    e.innerHTML = emojis[Math.floor(Math.random()*emojis.length)];
+    e.style.left = centroX + "px";
+    e.style.top = centroY + "px";
+
+    const angle = Math.random() * 2 * Math.PI;
+    const distance = 220 + Math.random() * 220;
+
+    e.animate([
+      { transform: "translate(0,0)", opacity: 1 },
+      { transform: `translate(${Math.cos(angle)*distance}px, ${Math.sin(angle)*distance}px)`, opacity: 0 }
+    ], {
+      duration: 1200,
+      easing: "ease-out"
+    });
+
+    document.body.appendChild(e);
+    setTimeout(() => e.remove(), 1200);
+  }
+}
+
+function criarEmoji(x, y, duracao) {
+  const e = document.createElement("div");
+  e.className = "emoji";
+  e.innerHTML = emojis[Math.floor(Math.random()*emojis.length)];
+  e.style.left = x + "px";
+  e.style.top = y + "px";
+  e.style.animationDuration = duracao + "s";
+  document.body.appendChild(e);
+  setTimeout(() => e.remove(), duracao * 1000);
+}
+
+// brilhos
+function iniciarBrilhos() {
+  setInterval(() => {
+    const s = document.createElement("div");
+    s.className = "sparkle";
+    s.innerHTML = "✨";
+    s.style.left = Math.random() * 100 + "vw";
+    s.style.top = Math.random() * 100 + "vh";
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 1500);
+  }, 320);
+}
+</script>
+
+</body>
+</html>
